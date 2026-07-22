@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= viewData.title %> | Library App</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="min-h-screen bg-gray-100 text-gray-800">
+  <div class="min-h-screen md:flex">
+    <aside class="bg-gray-800 text-white shadow-lg md:fixed md:inset-y-0 md:w-64">
+      <div class="flex h-full flex-col">
+        <div class="flex-1 p-6">
+          <div class="mb-8 flex items-center">
+            <i class="fas fa-graduation-cap mr-3 text-2xl text-blue-400"></i>
+            <span class="text-xl font-bold">Library Dashboard</span>
+          </div>
+
+          <nav class="space-y-2" aria-label="Navegación principal">
+            <% const links = [
+              { href: '/', label: 'Home', icon: 'fa-home' },
+              { href: '/about', label: 'About', icon: 'fa-info-circle' },
+              { href: '/contact', label: 'Contact', icon: 'fa-envelope' }
+            ]; %>
+            <% links.forEach((link) => { %>
+              <a href="<%= link.href %>" class="flex items-center rounded-lg px-4 py-3 transition duration-200 <%= viewData.currentPath === link.href ? 'bg-blue-600 text-white' : 'hover:bg-gray-700' %>" <%- viewData.currentPath === link.href ? 'aria-current="page"' : '' %>>
+                <i class="fas <%= link.icon %> mr-3 w-5 text-center"></i>
+                <span><%= link.label %></span>
+              </a>
+            <% }); %>
+          </nav>
+        </div>
+
+        <div class="mt-auto border-t border-gray-700 p-6">
+          <div class="flex items-center">
+            <div class="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+              <i class="fas fa-user text-white"></i>
+            </div>
+            <div>
+              <p class="text-sm font-semibold">Admin User</p>
+              <p class="text-xs text-gray-400">admin@example.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="flex min-h-screen flex-1 flex-col md:ml-64">
+      <header class="border-b border-gray-200 bg-white shadow-sm">
+        <div class="flex items-center justify-between px-6 py-4">
+          <h1 class="text-2xl font-bold text-gray-800"><%= viewData.title %></h1>
+          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500">
+            <i class="fas fa-user text-white"></i>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 p-6">
+        <%- body %>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
