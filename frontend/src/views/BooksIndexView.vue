@@ -1,75 +1,41 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import { BookService } from '@/services/BookService.js';
-import { OtherService } from '@/services/OtherService.js';
-import { formatToCOP } from '@/utils/formatToCOP.js';
+import type { BookInterface } from '@/interfaces/BookInterface.js';
+import { onMounted, ref } from 'vue';
 
-const books = BookService.getBooks();
-const selectedCategory = ref('');
-const selectorCategories = computed(() => OtherService.getUniqueBookCategories());
-const filteredBooks = computed(() => {
-  if (!selectedCategory.value) return books;
-  return books.filter((book) => book.category === selectedCategory.value);
+const books = ref<BookInterface[]>([]);
+
+onMounted(async () => {
+  books.value = await BookService.getBooks();
 });
-
-function deleteLastBook() {
-  BookService.deleteLastBook();
-}
 </script>
 
 <template>
   <section>
     <div class="max-w-7xl mx-auto">
-      <div class="flex flex-wrap items-center justify-end gap-3 mb-6">
-        <select
-          v-model="selectedCategory"
-          class="border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring focus:border-blue-300 min-w-48"
-        >
-          <option value="">All Categories</option>
-          <option v-for="category in selectorCategories" :key="category" :value="category">
-            {{ category }}
-          </option>
-        </select>
-        <button
-          type="button"
-          class="inline-block bg-red-600 text-white font-semibold px-5 py-2 rounded hover:bg-red-700 transition disabled:cursor-not-allowed disabled:opacity-50"
-          :disabled="books.length === 0"
-          @click="deleteLastBook"
-        >
-          Delete Last Book
-        </button>
+      <div class="flex justify-end mb-6">
         <RouterLink
           to="/books/create"
           class="inline-block bg-blue-600 text-white font-semibold px-5 py-2 rounded hover:bg-blue-700 transition"
+          >+ Add Book</RouterLink
         >
-          + Add Book
-        </RouterLink>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div v-for="book in filteredBooks" :key="book.id">
-          <div
-            class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 border border-gray-200"
-          >
+        <div v-for="book in books" :key="book.id">
+          <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 border border-gray-200">
             <div class="flex justify-between items-center mb-2">
-              <h3 class="text-xl font-semibold text-gray-800">{{ book.title }}</h3>
-              <span
-                v-if="book.stock > 0"
-                class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full ml-2"
-              >
+              <h3 class="text-xl font-semibold text-gray-800">
+                {{ book.title }}
+              </h3>
+              <span v-if="book.stock > 0" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full ml-2">
                 {{ book.stock }} available
               </span>
-              <span v-else class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full ml-2">
-                Not available
-              </span>
+              <span v-else class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full ml-2"> Not available </span>
             </div>
 
             <div class="flex justify-center mb-4">
-              <img
-                src="https://picsum.photos/seed/picsum/536/354"
-                alt="Book Cover"
-                class="object-cover rounded shadow-sm w-full h-auto"
-              />
+              <img src="https://picsum.photos/seed/picsum/536/354" alt="Book Cover" class="object-cover rounded shadow-sm w-full h-auto" />
             </div>
 
             <p class="text-gray-500 text-sm mb-3">
@@ -80,7 +46,7 @@ function deleteLastBook() {
             <div class="bg-gray-50 rounded-lg p-3 mb-4">
               <div class="flex justify-between text-sm">
                 <span class="text-gray-600">Price:</span>
-                <span class="font-semibold">{{ formatToCOP(book.price) }}</span>
+                <span class="font-semibold">${{ book.price }} COP</span>
               </div>
             </div>
 
