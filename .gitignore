@@ -4,4 +4,7 @@ frontend/node_modules/
 backend/node_modules/
 backend/database.sqlite
 backend/*.tsbuildinfo
+nuxt/node_modules/
+nuxt/.nuxt/
+nuxt/.output/
 .DS_Store
